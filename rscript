@@ -1,0 +1,40 @@
+## Convert wide to long for mixed ANOVA model
+library(dplyr)
+library(tidyr)
+library(rstatix)
+library(ggpubr)   # optional for visualization
+library(rlang)    # used for tidy-eval in a couple of helper lines
+
+
+##how to gather
+## newdf <- gather(olddf, newindex, variablecollapsing, -retainedvar, - retainedvar, -etc)
+
+# Variable X across levels LV1 and LV2
+allAOV <- c("PARTICPANT", "X", "LV1", "LV2") # Main Var AOV levels
+vars_wide <- DATA[,allAOV]
+vars_long2 <- gather(vars_wide, X, -part_id)
+
+# AOV model
+res <- run_wide_to_long_anova(
+  data = DATA,
+  id_col = "PARTICIPANT",
+  dv_name = "X",
+  within_cols = c("LV1", "LV2"),
+  within_name = "level",    # long column will be named 'level'
+  between_col = NULL        # or "GROUP" if you have a between-subject factor
+)
+
+# View results
+head(res$long_data)
+res$anova_table
+
+# OR
+res2 <- run_wide_to_long_anova(
+  data = DATA,
+  id_col = "PARTICIPANT",
+  dv_name = "C",
+  within_cols = "regex:^C",
+  within_name = "condition",
+  between_col = "GROUP"   # optional
+)
+res2$anova_table
