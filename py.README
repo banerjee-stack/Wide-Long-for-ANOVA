@@ -1,0 +1,21 @@
+from wide_to_long_anova import run_wide_to_long_anova
+
+res = run_wide_to_long_anova(
+    data=DATA,
+    id_col="PARTICIPANT",
+    dv_name="X",
+    within_cols=["LV1", "LV2"],
+    within_name="level"
+)
+
+res2 = run_wide_to_long_anova(
+    data=DATA,
+    id_col="PARTICIPANT",
+    dv_name="C",
+    within_cols="regex:^C",
+    within_name="condition",
+    between_col="GROUP"
+)
+
+print(res["anova_table"])
+print(res["posthoc_table"])
